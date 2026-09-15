@@ -84,6 +84,26 @@ footer{border-top:1px solid var(--line);padding:34px 0;color:var(--mut);font-siz
 .msgbox .mclose{position:absolute;top:12px;inset-inline-end:14px;background:none;border:0;font-size:22px;color:var(--mut);cursor:pointer}
 .msgdone{display:none;color:#43d17c;font-weight:600;padding:10px 0}
 @media(max-width:640px){.nav a.l{display:none}.hlp{display:none}select.lang{max-width:96px}}
+
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:18px}
+.pcard{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;transition:.2s}
+.pcard:hover{border-color:var(--acc);transform:translateY(-3px)}
+.pcard .ph{aspect-ratio:4/3;background:radial-gradient(120% 120% at 30% 20%,#1c2431,#0b0e13);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.pcard .ph img{width:100%;height:100%;object-fit:contain}
+.pcard .ph .ic{font-size:54px}
+.pcard .bd{padding:14px 16px;display:flex;flex-direction:column;gap:8px;flex:1}
+.pcard .en{font-weight:800;font-size:15px;line-height:1.35}
+.pcard .zh{font-size:12.5px;color:var(--mut);margin-top:-4px}
+.pcard ul{list-style:none;display:flex;flex-direction:column;gap:4px;margin-top:2px}
+.pcard li{font-size:12.5px;color:var(--mut);padding-inline-start:14px;position:relative;direction:ltr;text-align:start}
+.pcard li::before{content:"";position:absolute;inset-inline-start:0;top:8px;width:5px;height:5px;border-radius:2px;background:var(--acc2);opacity:.85}
+.pcard .q{margin-top:auto;font:700 12.5px inherit;color:var(--acc);background:none;border:0;cursor:pointer;padding:8px 0 2px;text-align:start}
+.pcard .q:hover{text-decoration:underline}
+.tabs{display:flex;gap:9px;flex-wrap:wrap;margin:4px 0 2px}
+.tab{font:600 12.5px inherit;padding:7px 14px;border-radius:999px;border:1.5px solid var(--line);background:#151a22;color:var(--ink);cursor:pointer}
+.tab.on,.tab:hover{background:var(--acc);color:#111;border-color:var(--acc)}
+.pempty{display:none;color:var(--mut);font-size:13px;padding:18px 0}
+
 </style></head>
 <body>
 <header><div class="wrap nav">
@@ -138,6 +158,13 @@ footer{border-top:1px solid var(--line);padding:34px 0;color:var(--mut);font-siz
 <section class="sec"><div class="wrap">
   <div class="note"><b>Contact</b> — Sourcing or bulk orders — leave a message and the author replies in the app. <a href="#" onclick="openMsg();return false">Leave a message →</a></div>
 </div></section>
+
+<section class="sec" id="catalog"><div class="wrap">
+  <h2>Product Catalog</h2><div class="sub">AI compute &amp; server hardware, ready to source.</div>
+  <div class="tabs" id="ptabs"></div>
+  <div class="pgrid" id="pgrid" data-site="ai" data-zh="0" data-quote="Request a quote →" data-all="All"></div>
+  <div class="pempty" id="pempty">Catalog is being updated.</div>
+</div></section>
 </main>
 <footer><div class="wrap">AI China · aichina.bid — AI compute &amp; server hardware. Product names and trademarks belong to their respective owners.</div></footer>
 
@@ -160,4 +187,69 @@ var txt='💬 AI China — '+new Date().toLocaleString()+String.fromCharCode(10)
 try{var r=await fetch('https://elrsrrvvuhfbkmxnvtod.supabase.co/rest/v1/messages',{method:'POST',headers:{apikey:'sb_publishable_XuZtEeFeJK6GtQC1RE3O6A_ZoVMcaO6',Authorization:'Bearer…caO6','Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({device_id:'website:aichina.bid',text:txt})});if(!r.ok)throw new Error(r.status);f.style.display='none';document.getElementById('msgDone').style.display='block';}catch(err){btn.textContent='Send';alert('Failed to send. Please try again.');}}
 </script>
 
+<script>
+(function(){
+  var sec=document.getElementById('catalog');
+  if(!sec) return;
+  var grid=document.getElementById('pgrid'), tabs=document.getElementById('ptabs');
+  var SITE=grid.getAttribute('data-site');
+  var SHOW_ZH=grid.getAttribute('data-zh')==='1';
+  var API='https://api.agentchina.uk';
+  var products=[], cats=[], cur='all';
+  // 不使用产品实拍图：现有图集带上游厂商标识，违反「不出现上游厂商名」；改用中性图标块。
+  // （日后有干净图源时把 USE_IMAGES 改 true 即可）
+  var USE_IMAGES=false;
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function specList(p){var o=[];var a=p.specs||[];for(var i=0;i<a.length&&o.length<3;i++){var s=a[i]||{};var t=s.k?(s.k+': '+s.v):(s.v||'');if(t)o.push(t);}return o;}
+  function cardHTML(p,i){
+    var img=(USE_IMAGES&&p.images&&p.images[0])||'';
+    var ph=img?('<img loading="lazy" src="'+esc(img)+'" alt="'+esc(p.name_en)+'">'):('<span class="ic">'+esc(p.icon||'\u{1F4E6}')+'</span>');
+    var sp=specList(p).map(function(s){return '<li>'+esc(s)+'</li>';}).join('');
+    var zh=(SHOW_ZH&&p.name_zh)?('<div class="zh">'+esc(p.name_zh)+'</div>'):'';
+    return '<article class="pcard">'
+      +'<div class="ph">'+ph+'</div>'
+      +'<div class="bd"><div class="en">'+esc(p.name_en||p.id)+'</div>'+zh
+      +(sp?('<ul>'+sp+'</ul>'):'')
+      +'<button class="q" data-i="'+i+'">'+grid.getAttribute('data-quote')+'</button>'
+      +'</div></article>';
+  }
+  function renderTabs(){
+    var h='<button class="tab'+(cur==='all'?' on':'')+'" data-cat="all">'+grid.getAttribute('data-all')+'</button>';
+    cats.forEach(function(c){
+      var nm=SHOW_ZH?(c.name_zh||c.name_en):(c.name_en||c.id);
+      h+='<button class="tab'+(cur===c.id?' on':'')+'" data-cat="'+esc(c.id)+'">'+esc((c.icon||'')+' '+nm)+'</button>';
+    });
+    tabs.innerHTML=h;
+  }
+  function render(){
+    var list=[];
+    for(var i=0;i<products.length;i++){
+      var p=products[i];
+      if(cur==='all'||p.category_id===cur) list.push(cardHTML(p,i));
+    }
+    grid.innerHTML=list.join('');
+    document.getElementById('pempty').style.display=list.length?'none':'block';
+  }
+  function openInquiry(p){
+    var m=document.getElementById('mt');
+    if(m){ m.value='Inquiry: '+(p.name_en||'')+(p.name_zh?(' / '+p.name_zh):''); }
+    if(typeof openMsg==='function') openMsg();
+  }
+  grid.addEventListener('click',function(e){
+    var b=e.target.closest('.q'); if(!b) return;
+    var p=products[parseInt(b.getAttribute('data-i'),10)]; if(p) openInquiry(p);
+  });
+  tabs.addEventListener('click',function(e){
+    var b=e.target.closest('.tab'); if(!b) return;
+    cur=b.getAttribute('data-cat'); renderTabs(); render();
+  });
+  Promise.all([
+    fetch(API+'/categories?site='+SITE).then(function(r){return r.json();}).catch(function(){return [];}),
+    fetch(API+'/search?site='+SITE).then(function(r){return r.json();}).catch(function(){return [];})
+  ]).then(function(res){
+    cats=Array.isArray(res[0])?res[0]:[]; products=Array.isArray(res[1])?res[1]:[];
+    renderTabs(); render();
+  }).catch(function(){ document.getElementById('pempty').style.display='block'; });
+})();
+</script>
 </body></html>
