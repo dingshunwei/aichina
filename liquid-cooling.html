@@ -68,11 +68,11 @@ h1{font-size:clamp(28px,4.6vw,48px);font-weight:800;line-height:1.12;margin-top:
 .film video{display:block;width:100%;height:auto;aspect-ratio:16/9;background:#000;object-fit:cover}
 .filmmeta{display:flex;gap:12px 20px;flex-wrap:wrap;justify-content:space-between;padding:13px 17px;font-size:12.5px;color:var(--mut);border-top:1px solid var(--line)}
 .filmmeta b{color:var(--ink);font-weight:700}
-.filmcta{display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding:16px 17px;border-top:1px solid var(--line);background:linear-gradient(120deg,rgba(255,106,61,.10),rgba(56,189,248,.06))}
-.filmcta button{font:800 14.5px/1 inherit;padding:12px 22px;border-radius:999px;border:0;background:var(--acc);color:#111;cursor:pointer;font-family:inherit}
-.filmcta button:hover{filter:brightness(1.08)}
-.filmcta span{color:var(--mut);font-size:12.5px}
-.filmcta a{color:var(--acc);font-weight:700}
+
+
+
+
+
 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-top:18px}
 .pcard{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;transition:.2s}
 .pcard:hover{border-color:var(--acc);transform:translateY(-3px)}
@@ -85,8 +85,8 @@ h1{font-size:clamp(28px,4.6vw,48px);font-weight:800;line-height:1.12;margin-top:
 .pcard ul{list-style:none;display:flex;flex-direction:column;gap:4px;margin-top:2px}
 .pcard li{font-size:12.5px;color:var(--mut);padding-inline-start:14px;position:relative}
 .pcard li::before{content:"";position:absolute;inset-inline-start:0;top:8px;width:5px;height:5px;border-radius:2px;background:var(--acc2);opacity:.85}
-.pcard .vrow{display:flex;align-items:center;gap:6px;margin-top:6px}.pcard .vrow span{font-size:13px}.pcard .vrow audio{width:100%;height:32px}.pcard .q{margin-top:auto;font:700 12.5px inherit;color:var(--acc);background:none;border:0;cursor:pointer;padding:8px 0 2px;text-align:start}
-.pcard .q:hover{text-decoration:underline}
+.pcard .vrow{display:flex;align-items:center;gap:6px;margin-top:6px}.pcard .vrow span{font-size:13px}.pcard .vrow audio{width:100%;height:32px}
+
 .pempty{display:none;color:var(--mut);font-size:13px;padding:18px 0}
 footer{border-top:1px solid var(--line);padding:34px 0;color:var(--mut);font-size:12.5px;text-align:center;margin-top:20px}
 .msgwrap{position:fixed;inset:0;background:rgba(4,6,9,.7);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}
@@ -129,10 +129,6 @@ footer{border-top:1px solid var(--line);padding:34px 0;color:var(--mut);font-siz
     <div class="filmmeta">
       <span><b>Film</b> · English narration · 47 s · 1080p</span>
       <span>Specifications, MOQ and lead time on request</span>
-    </div>
-    <div class="filmcta">
-      <button type="button" onclick="openMsg()">Get a quote · 获取报价</button>
-      <span>Tell us the rack power (kW), coolant loop and target site — we reply with CDU / container options and lead time. 告诉我们规格，我们回方案与交期。</span>
     </div>
   </div>
 </div></section>
@@ -303,19 +299,12 @@ try{var r=await fetch('https://elrsrrvvuhfbkmxnvtod.supabase.co/rest/v1/messages
       +(p.name_zh?('<div class="zh">'+esc(p.name_zh)+'</div>'):'')
       +(sp?('<ul>'+sp+'</ul>'):'')
       +(p.voice_url?('<div class="vrow"><span>\u{1F50A}</span><audio controls preload="none" src="'+esc(p.voice_url)+'"></audio></div>'):'')
-      +'<button class="q" data-i="'+i+'">Request a quote →</button></div></article>';
+      +'</div></article>';
   }
   fetch(API+'/search?site='+SITE+'&cat='+CAT).then(function(r){return r.json();}).then(function(list){
     list=Array.isArray(list)?list:[];
     if(!list.length){ document.getElementById('lcempty').style.display='block'; return; }
     grid.innerHTML=list.map(card).join('');
-    grid.addEventListener('click',function(e){
-      var b=e.target.closest('.q'); if(!b) return;
-      var p=list[parseInt(b.getAttribute('data-i'),10)]||{};
-      var m=document.getElementById('mt');
-      if(m) m.value='Inquiry: '+(p.name_en||'')+(p.name_zh?(' / '+p.name_zh):'');
-      if(typeof openMsg==='function') openMsg();
-    });
   }).catch(function(){ document.getElementById('lcempty').style.display='block'; });
 })();
 </script>
