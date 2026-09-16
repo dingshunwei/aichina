@@ -178,8 +178,8 @@ footer{border-top:1px solid var(--line);padding:34px 0;color:var(--mut);font-siz
   <button class="mclose" onclick="closeMsg()">&#10005;</button>
   <h3>给我留言</h3>
   <form id="msgForm" onsubmit="sendMsg(event);return false;">
-    <input type="text" id="mn" placeholder="Name (optional)">
-    <input type="email" id="me" placeholder="Email (optional)">
+    <input type="text" id="mn" placeholder="Name *">
+    <input type="email" id="me" placeholder="Email *">
     <textarea id="mt" required placeholder="想说的话…"></textarea>
     <button class="msend" type="submit">发送</button>
   </form>
@@ -188,7 +188,7 @@ footer{border-top:1px solid var(--line);padding:34px 0;color:var(--mut);font-siz
 <script>
 function openMsg(){document.getElementById('msgModal').style.display='flex';}
 function closeMsg(){document.getElementById('msgModal').style.display='none';}
-async function sendMsg(e){e.preventDefault();var f=document.getElementById('msgForm');var btn=f.querySelector('.msend');btn.textContent='...';var name=document.getElementById('mn').value.trim();var em=document.getElementById('me').value.trim();var msg=document.getElementById('mt').value.trim();if(!msg){btn.textContent='发送';alert('请输入内容。');return;}
+async function sendMsg(e){e.preventDefault();var f=document.getElementById('msgForm');var btn=f.querySelector('.msend');btn.textContent='...';var name=document.getElementById('mn').value.trim();var em=document.getElementById('me').value.trim();var msg=document.getElementById('mt').value.trim();if(!msg){btn.textContent='发送';alert('请输入内容。');return;}var _nm=document.getElementById('mn')||document.querySelector('input[type=text][name=name]')||document.querySelector('input[type=text]');var _em=document.getElementById('me')||document.querySelector('input[type=email]');if(_nm&&!_nm.value.trim()){btn.textContent='Send';alert('Please enter your name.');_nm.focus();return;}if(_em&&!_em.value.trim()){btn.textContent='Send';alert('Please enter your email.');_em.focus();return;}
 var txt='💬 AI China — '+new Date().toLocaleString()+String.fromCharCode(10)+'Name: '+name+String.fromCharCode(10)+'Email: '+em+String.fromCharCode(10)+'Message: '+msg;
 try{var r=await fetch('https://elrsrrvvuhfbkmxnvtod.supabase.co/rest/v1/messages',{method:'POST',headers:{apikey:'sb_publishable_XuZtEeFeJK6GtQC1RE3O6A_ZoVMcaO6',Authorization:'Bearer…caO6','Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({device_id:'website:aichina.bid',text:txt})});if(!r.ok)throw new Error(r.status);f.style.display='none';document.getElementById('msgDone').style.display='block';}catch(err){btn.textContent='发送';alert('发送失败，请重试。');}}
 </script>
