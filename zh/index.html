@@ -111,7 +111,7 @@ footer{border-top:1px solid var(--line);padding:34px 0;color:var(--mut);font-siz
   <span class="sp"></span>
   <a class="l" href="#products">产品线</a>
   <select class="lang" onchange="if(this.value)location.href=((this.value=='en')?'/':'/'+this.value+'/')" aria-label="Language"><option value="en">English</option><option value="zh" selected>中文</option><option value="ar">العربية</option><option value="de">Deutsch</option><option value="es">Español</option><option value="fa">فارسی</option><option value="fr">Français</option><option value="he">עברית</option><option value="hi">हिन्दी</option><option value="id">Indonesia</option><option value="it">Italiano</option><option value="ja">日本語</option><option value="ko">한국어</option><option value="nl">Nederlands</option><option value="pl">Polski</option><option value="pt">Português</option><option value="ru">Русский</option><option value="sv">Svenska</option><option value="th">ไทย</option><option value="tr">Türkçe</option><option value="ur">اردو</option><option value="vi">Tiếng Việt</option></select>
-  <button class="hlp" onclick="openMsg()">给我留言</button>
+  <button class="hlp" onclick="openMsg()">联系作者 · Contact the author</button>
 </div></header>
 
 <main>
@@ -156,7 +156,7 @@ footer{border-top:1px solid var(--line);padding:34px 0;color:var(--mut);font-siz
   </div>
 </div></section>
 <section class="sec"><div class="wrap">
-  <div class="note"><b>联系</b> — 采购 / 批量订单咨询，给我留言，作者在 App 里回复。 <a href="#" onclick="openMsg();return false">给我留言 →</a></div>
+  <div class="note"><b>联系作者</b> — 有关产品、规格或订单，直接联系作者，作者在 App 里回复。 <a href="#" onclick="openMsg();return false">联系作者 →</a></div>
 </div></section>
 
 <section class="sec" id="catalog"><div class="wrap">
@@ -170,19 +170,19 @@ footer{border-top:1px solid var(--line);padding:34px 0;color:var(--mut);font-siz
 
 <div class="msgwrap" id="msgModal"><div class="msgbox">
   <button class="mclose" onclick="closeMsg()">&#10005;</button>
-  <h3>给我留言</h3>
+  <h3>联系作者 · Contact the author</h3>
   <form id="msgForm" onsubmit="sendMsg(event);return false;">
     <input type="text" id="mn" placeholder="Name (optional)">
     <input type="email" id="me" placeholder="Email (optional)">
     <textarea id="mt" required placeholder="想说的话…"></textarea>
     <button class="msend" type="submit">发送</button>
   </form>
-  <div class="msgdone" id="msgDone">&#10004; 谢谢！留言已发送。</div>
+  <div class="msgdone" id="msgDone">&#10004; 谢谢！已发送，作者会尽快回复。</div>
 </div></div>
 <script>
 function openMsg(){document.getElementById('msgModal').style.display='flex';}
 function closeMsg(){document.getElementById('msgModal').style.display='none';}
-async function sendMsg(e){e.preventDefault();var f=document.getElementById('msgForm');var btn=f.querySelector('.msend');btn.textContent='...';var name=document.getElementById('mn').value.trim();var em=document.getElementById('me').value.trim();var msg=document.getElementById('mt').value.trim();if(!msg){btn.textContent='发送';alert('请输入留言内容。');return;}
+async function sendMsg(e){e.preventDefault();var f=document.getElementById('msgForm');var btn=f.querySelector('.msend');btn.textContent='...';var name=document.getElementById('mn').value.trim();var em=document.getElementById('me').value.trim();var msg=document.getElementById('mt').value.trim();if(!msg){btn.textContent='发送';alert('请输入内容。');return;}
 var txt='💬 AI China — '+new Date().toLocaleString()+String.fromCharCode(10)+'Name: '+name+String.fromCharCode(10)+'Email: '+em+String.fromCharCode(10)+'Message: '+msg;
 try{var r=await fetch('https://elrsrrvvuhfbkmxnvtod.supabase.co/rest/v1/messages',{method:'POST',headers:{apikey:'sb_publishable_XuZtEeFeJK6GtQC1RE3O6A_ZoVMcaO6',Authorization:'Bearer…caO6','Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({device_id:'website:aichina.bid',text:txt})});if(!r.ok)throw new Error(r.status);f.style.display='none';document.getElementById('msgDone').style.display='block';}catch(err){btn.textContent='发送';alert('发送失败，请重试。');}}
 </script>
