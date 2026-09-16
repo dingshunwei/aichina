@@ -64,6 +64,10 @@ h1{font-size:clamp(28px,4.6vw,48px);font-weight:800;line-height:1.12;margin-top:
 .ref span{color:var(--mut);font-size:12.5px}
 .note{margin-top:26px;background:linear-gradient(120deg,rgba(255,106,61,.1),rgba(56,189,248,.07));border:1px solid var(--line);border-radius:16px;padding:22px;font-size:14.5px}
 .note b{font-weight:800}.note a{color:var(--acc);font-weight:700}
+.film{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.film video{display:block;width:100%;height:auto;aspect-ratio:16/9;background:#000;object-fit:cover}
+.filmmeta{display:flex;gap:12px 20px;flex-wrap:wrap;justify-content:space-between;padding:13px 17px;font-size:12.5px;color:var(--mut);border-top:1px solid var(--line)}
+.filmmeta b{color:var(--ink);font-weight:700}
 footer{border-top:1px solid var(--line);padding:34px 0;color:var(--mut);font-size:12.5px;text-align:center;margin-top:20px}
 .msgwrap{position:fixed;inset:0;background:rgba(4,6,9,.7);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}
 .msgbox{background:#151a22;border:1px solid var(--line);border-radius:18px;max-width:440px;width:100%;padding:26px;position:relative}
@@ -92,6 +96,21 @@ footer{border-top:1px solid var(--line);padding:34px 0;color:var(--mut);font-siz
   <p>When a rack goes past ~20–30 kW, air stops being enough. We supply the liquid-cooling hardware that goes with high-density compute build-outs:
   rack cabinets, in-rack CDUs, cold plates, manifolds and quick disconnects — plus immersion tanks for single- and two-phase deployments.</p>
   <div class="chips"><span class="chip on">Cold plate / D2C</span><span class="chip on">Immersion</span><span class="chip on">CDU</span><span class="chip">{40}</span></div>
+</div></section>
+
+<section class="sec"><div class="wrap">
+  <h2>Prefabricated liquid-cooled compute container</h2>
+  <div class="sub">300 kW per unit · cold/hot aisle separation · arrival to production in 72 hours — 预制液冷算力舱</div>
+  <div class="film">
+    <video controls playsinline preload="metadata" poster="img/liquidcool-poster.jpg">
+      <source src="video/liquid-cooled-compute-container-en.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <div class="filmmeta">
+      <span><b>Film</b> · English narration · 47 s · 1080p</span>
+      <span>Specifications, MOQ and lead time on request</span>
+    </div>
+  </div>
 </div></section>
 
 <section class="sec"><div class="wrap">
