@@ -97,7 +97,7 @@ footer{border-top:1px solid var(--line);padding:34px 0;color:var(--mut);font-siz
 .pcard ul{list-style:none;display:flex;flex-direction:column;gap:4px;margin-top:2px}
 .pcard li{font-size:12.5px;color:var(--mut);padding-inline-start:14px;position:relative;direction:ltr;text-align:start}
 .pcard li::before{content:"";position:absolute;inset-inline-start:0;top:8px;width:5px;height:5px;border-radius:2px;background:var(--acc2);opacity:.85}
-.pcard .q{margin-top:auto;font:700 12.5px inherit;color:var(--acc);background:none;border:0;cursor:pointer;padding:8px 0 2px;text-align:start}
+.pcard .vrow{display:flex;align-items:center;gap:6px;margin-top:6px}.pcard .vrow span{font-size:13px}.pcard .vrow audio{width:100%;height:32px}.pcard .q{margin-top:auto;font:700 12.5px inherit;color:var(--acc);background:none;border:0;cursor:pointer;padding:8px 0 2px;text-align:start}
 .pcard .q:hover{text-decoration:underline}
 .tabs{display:flex;gap:9px;flex-wrap:wrap;margin:4px 0 2px}
 .tab{font:600 12.5px inherit;padding:7px 14px;border-radius:999px;border:1.5px solid var(--line);background:#151a22;color:var(--ink);cursor:pointer}
@@ -211,6 +211,7 @@ try{var r=await fetch('https://elrsrrvvuhfbkmxnvtod.supabase.co/rest/v1/messages
       +'<div class="ph">'+ph+'</div>'
       +'<div class="bd"><div class="en">'+esc(p.name_en||p.id)+'</div>'+zh
       +(sp?('<ul>'+sp+'</ul>'):'')
+      +(p.voice_url?('<div class="vrow"><span>\u{1F50A}</span><audio controls preload="none" src="'+esc(p.voice_url)+'"></audio></div>'):'')
       +'<button class="q" data-i="'+i+'">'+grid.getAttribute('data-quote')+'</button>'
       +'</div></article>';
   }
