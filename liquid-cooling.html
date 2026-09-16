@@ -68,6 +68,26 @@ h1{font-size:clamp(28px,4.6vw,48px);font-weight:800;line-height:1.12;margin-top:
 .film video{display:block;width:100%;height:auto;aspect-ratio:16/9;background:#000;object-fit:cover}
 .filmmeta{display:flex;gap:12px 20px;flex-wrap:wrap;justify-content:space-between;padding:13px 17px;font-size:12.5px;color:var(--mut);border-top:1px solid var(--line)}
 .filmmeta b{color:var(--ink);font-weight:700}
+.filmcta{display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding:16px 17px;border-top:1px solid var(--line);background:linear-gradient(120deg,rgba(255,106,61,.10),rgba(56,189,248,.06))}
+.filmcta button{font:800 14.5px/1 inherit;padding:12px 22px;border-radius:999px;border:0;background:var(--acc);color:#111;cursor:pointer;font-family:inherit}
+.filmcta button:hover{filter:brightness(1.08)}
+.filmcta span{color:var(--mut);font-size:12.5px}
+.filmcta a{color:var(--acc);font-weight:700}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-top:18px}
+.pcard{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;transition:.2s}
+.pcard:hover{border-color:var(--acc);transform:translateY(-3px)}
+.pcard .ph{aspect-ratio:4/3;background:radial-gradient(120% 120% at 30% 20%,#1c2431,#0b0e13);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.pcard .ph img{width:100%;height:100%;object-fit:cover}
+.pcard .ph .ic{font-size:54px}
+.pcard .bd{padding:14px 16px;display:flex;flex-direction:column;gap:8px;flex:1}
+.pcard .en{font-weight:800;font-size:15px;line-height:1.35}
+.pcard .zh{font-size:12.5px;color:var(--mut);margin-top:-4px}
+.pcard ul{list-style:none;display:flex;flex-direction:column;gap:4px;margin-top:2px}
+.pcard li{font-size:12.5px;color:var(--mut);padding-inline-start:14px;position:relative}
+.pcard li::before{content:"";position:absolute;inset-inline-start:0;top:8px;width:5px;height:5px;border-radius:2px;background:var(--acc2);opacity:.85}
+.pcard .q{margin-top:auto;font:700 12.5px inherit;color:var(--acc);background:none;border:0;cursor:pointer;padding:8px 0 2px;text-align:start}
+.pcard .q:hover{text-decoration:underline}
+.pempty{display:none;color:var(--mut);font-size:13px;padding:18px 0}
 footer{border-top:1px solid var(--line);padding:34px 0;color:var(--mut);font-size:12.5px;text-align:center;margin-top:20px}
 .msgwrap{position:fixed;inset:0;background:rgba(4,6,9,.7);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}
 .msgbox{background:#151a22;border:1px solid var(--line);border-radius:18px;max-width:440px;width:100%;padding:26px;position:relative}
@@ -110,7 +130,18 @@ footer{border-top:1px solid var(--line);padding:34px 0;color:var(--mut);font-siz
       <span><b>Film</b> · English narration · 47 s · 1080p</span>
       <span>Specifications, MOQ and lead time on request</span>
     </div>
+    <div class="filmcta">
+      <button type="button" onclick="openMsg()">Get a quote · 获取报价</button>
+      <span>Tell us the rack power (kW), coolant loop and target site — we reply with CDU / container options and lead time. 告诉我们规格，我们回方案与交期。</span>
+    </div>
   </div>
+</div></section>
+
+<section class="sec" id="lc-products"><div class="wrap">
+  <h2>Liquid cooling products</h2>
+  <div class="sub">Maintained in our trade desk backend — new items appear here automatically（后台维护，页面自动同步）</div>
+  <div class="pgrid" id="lcgrid" data-site="ai" data-cat="liquid-cooling"></div>
+  <div class="pempty" id="lcempty">No products published yet. <a href="#" onclick="openMsg();return false">Ask us →</a></div>
 </div></section>
 
 <section class="sec"><div class="wrap">
@@ -255,7 +286,36 @@ footer{border-top:1px solid var(--line);padding:34px 0;color:var(--mut);font-siz
 function openMsg(){document.getElementById('msgModal').style.display='flex';}
 function closeMsg(){document.getElementById('msgModal').style.display='none';}
 async function sendMsg(e){e.preventDefault();var f=document.getElementById('msgForm');var btn=f.querySelector('.msend');btn.textContent='...';var name=document.getElementById('mn').value.trim();var em=document.getElementById('me').value.trim();var msg=document.getElementById('mt').value.trim();if(!msg){btn.textContent='Send';alert('Please enter a message.');return;}
-var txt='🧊 AI China · Liquid cooling — '+new Date().toLocaleString()+String.fromCharCode(10)+'Name: '+name+String.fromCharCode(10)+'Email: '+em+String.fromCharCode(10)+'Message: '+msg;
+var txt='🧊 AI China · Liquid cooling page ('+location.pathname+') — '+new Date().toLocaleString()+String.fromCharCode(10)+'Name: '+name+String.fromCharCode(10)+'Email: '+em+String.fromCharCode(10)+'Message: '+msg;
 try{var r=await fetch('https://elrsrrvvuhfbkmxnvtod.supabase.co/rest/v1/messages',{method:'POST',headers:{apikey:'sb_publishable_XuZtEeFeJK6GtQC1RE3O6A_ZoVMcaO6',Authorization:'Bearer sb_publishable_XuZtEeFeJK6GtQC1RE3O6A_ZoVMcaO6','Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({device_id:'website:aichina.bid',text:txt})});if(!r.ok)throw new Error(r.status);f.style.display='none';document.getElementById('msgDone').style.display='block';}catch(err){btn.textContent='Send';alert('Failed to send. Please try again.');}}
+</script>
+<script>
+(function(){
+  var grid=document.getElementById('lcgrid'); if(!grid) return;
+  var API='https://api.agentchina.uk';
+  var SITE=grid.getAttribute('data-site'), CAT=grid.getAttribute('data-cat');
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function specs(p){var o=[],a=p.specs||[];for(var i=0;i<a.length&&o.length<4;i++){var s=a[i]||{};var t=s.k?(s.k+': '+s.v):(s.v||'');if(t)o.push(t);}return o;}
+  function card(p,i){
+    var img=(p.images&&p.images[0])?('<img loading="lazy" src="'+esc(p.images[0])+'" alt="'+esc(p.name_en||'')+'">'):('<span class="ic">'+esc(p.icon||'\u{1F4E6}')+'</span>');
+    var sp=specs(p).map(function(s){return '<li>'+esc(s)+'</li>';}).join('');
+    return '<article class="pcard"><div class="ph">'+img+'</div><div class="bd"><div class="en">'+esc(p.name_en||p.id)+'</div>'
+      +(p.name_zh?('<div class="zh">'+esc(p.name_zh)+'</div>'):'')
+      +(sp?('<ul>'+sp+'</ul>'):'')
+      +'<button class="q" data-i="'+i+'">Request a quote →</button></div></article>';
+  }
+  fetch(API+'/search?site='+SITE+'&cat='+CAT).then(function(r){return r.json();}).then(function(list){
+    list=Array.isArray(list)?list:[];
+    if(!list.length){ document.getElementById('lcempty').style.display='block'; return; }
+    grid.innerHTML=list.map(card).join('');
+    grid.addEventListener('click',function(e){
+      var b=e.target.closest('.q'); if(!b) return;
+      var p=list[parseInt(b.getAttribute('data-i'),10)]||{};
+      var m=document.getElementById('mt');
+      if(m) m.value='Inquiry: '+(p.name_en||'')+(p.name_zh?(' / '+p.name_zh):'');
+      if(typeof openMsg==='function') openMsg();
+    });
+  }).catch(function(){ document.getElementById('lcempty').style.display='block'; });
+})();
 </script>
 </body></html>
