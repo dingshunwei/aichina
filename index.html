@@ -207,7 +207,7 @@ try{var r=await fetch('https://elrsrrvvuhfbkmxnvtod.supabase.co/rest/v1/messages
   var products=[], cats=[], cur='all';
   // 不使用产品实拍图：现有图集带上游厂商标识，违反「不出现上游厂商名」；改用中性图标块。
   // （日后有干净图源时把 USE_IMAGES 改 true 即可）
-  var USE_IMAGES=false;
+  var USE_IMAGES=true;
   function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
   function specList(p){var o=[];var a=p.specs||[];for(var i=0;i<a.length&&o.length<3;i++){var s=a[i]||{};var t=s.k?(s.k+': '+s.v):(s.v||'');if(t)o.push(t);}return o;}
   function cardHTML(p,i){
