@@ -107,156 +107,113 @@ footer{border-top:1px solid var(--line);padding:34px 0;color:var(--mut);font-siz
   <button class="hlp" onclick="openMsg()">Leave a message</button>
 </div></header>
 
-<main>
-<section class="hero"><div class="wrap">
-  <span class="kick">Liquid Cooling · High-Density AI</span>
-  <h1>Liquid Cooling for<br>AI Server Racks</h1>
-  <p>When a rack goes past ~20–30 kW, air stops being enough. We supply the liquid-cooling hardware that goes with high-density compute build-outs:
-  rack cabinets, in-rack CDUs, cold plates, manifolds and quick disconnects — plus immersion tanks for single- and two-phase deployments.</p>
-  <div class="chips"><span class="chip on">Cold plate / D2C</span><span class="chip on">Immersion</span><span class="chip on">CDU</span></div>
-</div></section>
+<main id="lcmain"></main>
 
-<section class="sec"><div class="wrap">
-  <h2>Prefabricated liquid-cooled compute container</h2>
-  <div class="film">
-    <video controls playsinline preload="metadata" poster="img/liquidcool-poster.jpg">
-      <source src="video/liquid-cooled-compute-container-en.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
-  </div>
-</div></section>
+<script>
+/* 全联动：页面上所有文案 + 产品都从主库读（文案 key=trade_settings.site_copy，产品=/search 接口） */
+(function(){
+  var SB='https://elrsrrvvuhfbkmxnvtod.supabase.co';
+  var API='https://api.agentchina.uk';
+  var H={apikey:'sb_publishable_XuZtEeFeJK6GtQC1RE3O6A_ZoVMcaO6',Authorization:'Bearer sb_publishable_XuZtEeFeJK6GtQC1RE3O6A_ZoVMcaO6'};
+  var CAT=document.body.getAttribute('data-cat')||'liquid-cooling';
+  var LANG=(document.documentElement.getAttribute('lang')||'en').slice(0,2);
+  var main=document.getElementById('lcmain');
 
-<section class="sec" id="lc-products"><div class="wrap">
-  <h2>Liquid cooling products</h2>
-  <div class="pgrid" id="lcgrid" data-site="ai" data-cat="liquid-cooling"></div>
-  <div class="pempty" id="lcempty">No products published yet. <a href="#" onclick="openMsg();return false">Ask us →</a></div>
-</div></section>
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function nl2br(s){return esc(s).replace(/\n/g,'<br>');}
+  function specs(p){var o=[],a=p.specs||[];for(var i=0;i<a.length&&o.length<4;i++){var s=a[i]||{};var x=s.k?(s.k+': '+s.v):(s.v||'');if(x)o.push(x);}return o;}
+  function pcard(p){
+    var img=(p.images&&p.images[0])?('<img loading="lazy" src="'+esc(p.images[0])+'" alt="'+esc(p.name_en||'')+'">'):('<span class="ic">'+esc(p.icon||'\u{1F4E6}')+'</span>');
+    var sp=specs(p).map(function(s){return '<li>'+esc(s)+'</li>';}).join('');
+    return '<article class="pcard"><div class="ph">'+img+'</div><div class="bd"><div class="en">'+esc(p.name_en||p.id)+'</div>'
+      +(p.name_zh?('<div class="zh">'+esc(p.name_zh)+'</div>'):'')
+      +(sp?('<ul>'+sp+'</ul>'):'')
+      +(p.voice_url?('<div class="vrow"><span>\u{1F50A}</span><audio controls preload="none" src="'+esc(p.voice_url)+'"></audio></div>'):'')
+      +'</div></article>';
+  }
 
-<section class="sec"><div class="wrap">
-  <h2>What we supply</h2>
-  <div class="sub">Six building blocks — mix and match per rack, per site</div>
-  <div class="items">
+  function renderProducts(site,cat){
+    var grid=document.getElementById('lcgrid'), empty=document.getElementById('lcempty');
+    if(!grid) return;
+    fetch(API+'/search?site='+encodeURIComponent(site)+'&cat='+encodeURIComponent(cat))
+      .then(function(r){return r.json();})
+      .then(function(list){
+        list=Array.isArray(list)?list:[];
+        if(!list.length){ if(empty) empty.style.display='block'; return; }
+        grid.innerHTML=list.map(pcard).join('');
+      }).catch(function(){ if(empty) empty.style.display='block'; });
+  }
 
-  <article class="item">
-    <div class="art"><img src="img/lc/rack-chilldyne.jpg" alt="Liquid-cooled rack cabinet with integrated manifold (reference product photo)" loading="lazy" style="width:100%;max-width:250px;border-radius:10px;display:block"></div>
-    <div class="body">
-      <h3>Liquid-Cooled Rack Cabinet <span class="tag">Cabinet</span></h3>
-      <p class="desc">A server cabinet designed for direct-to-chip cooling: the coolant loop, rack manifold and drip-free connections are integrated into the rack, so the row is ready before the nodes arrive. Front-door, side-panel and rear-door heat-exchanger variants are available for retrofit situations where the CPU/GPU are still air-cooled.</p>
-      <ul>
-        <li>42U / 48U, 600 × 1200 mm class</li>
-        <li>Integrated rack manifold + drip tray</li>
-        <li>Blind-mate connections for hot-swap nodes</li>
-        <li>Rear-door heat exchanger retrofit option</li>
-        <li>Leak-sensor rope pre-installed</li>
-      </ul>
-      <div class="meta">Typical pairing: <code>cold plate nodes</code> + <code>in-rack CDU</code></div>
-      <div class="meta">Photo: <code>Chilldyne</code></div>
-    </div>
-  </article>
+  function sec(inner){return '<section class="sec"><div class="wrap">'+inner+'</div></section>';}
 
-  <article class="item">
-    <div class="art"><img src="img/lc/cdu-envicool.png" alt="In-rack coolant distribution unit (reference product photo)" loading="lazy" style="width:100%;max-width:250px;border-radius:10px;display:block"></div>
-    <div class="body">
-      <h3>In-Rack CDU <span class="tag">CDU</span></h3>
-      <p class="desc">The unit that separates the facility water loop from the server loop. Sits inside the rack (4U–6U class) and delivers filtered, temperature- and flow-controlled coolant to the cold plates. Redundant pumps and N+1 power keep a single failure from taking the rack down.</p>
-      <ul>
-        <li>4U / 6U in-rack form factor</li>
-        <li>Roughly 60 kW – 250 kW class per unit</li>
-        <li>Redundant pumps, N+1 PSU</li>
-        <li>Facility-side and IT-side isolation</li>
-        <li>Flow, ΔP, temperature and leak telemetry</li>
-      </ul>
-      <div class="meta">Ask for: <code>capacity</code> · <code>primary/secondary ΔT</code> · <code>pump redundancy</code></div>
-    </div>
-  </article>
+  function render(c){
+    var out='';
+    // hero
+    out+='<section class="hero"><div class="wrap">'
+      +(c.kick?('<span class="kick">'+esc(c.kick)+'</span>'):'')
+      +(c.title?('<h1>'+nl2br(c.title)+'</h1>'):'')
+      +(c.lead?('<p>'+nl2br(c.lead)+'</p>'):'')
+      +((c.chips&&c.chips.length)?('<div class="chips">'+c.chips.map(function(x){return '<span class="chip on">'+esc(x)+'</span>';}).join('')+'</div>'):'')
+      +'</div></section>';
+    // sections
+    (c.sections||[]).forEach(function(s){
+      var inner='';
+      if(s.head) inner+='<h2>'+esc(s.head)+'</h2>';
+      if(s.sub) inner+='<div class="sub">'+esc(s.sub)+'</div>';
+      if(s.video&&s.video.src){
+        inner+='<div class="film"><video controls playsinline preload="metadata"'+(s.video.poster?(' poster="'+esc(s.video.poster)+'"'):'')+'>'
+             +'<source src="'+esc(s.video.src)+'" type="video/mp4">Your browser does not support the video tag.</video></div>';
+      }
+      if(s.body) inner+='<p>'+nl2br(s.body)+'</p>';
+      if(s.products&&s.products.site){
+        inner+='<div class="pgrid" id="lcgrid" data-site="'+esc(s.products.site)+'" data-cat="'+esc(s.products.cat||CAT)+'"></div>'
+             +'<div class="pempty" id="lcempty">No products published yet. <a href="#" onclick="openMsg();return false">Ask us \u2192</a></div>';
+      }
+      if(s.cards&&s.cards.length){
+        inner+='<div class="items">';
+        s.cards.forEach(function(it){
+          inner+='<article class="item">';
+          if(it.img) inner+='<div class="art"><img src="'+esc(it.img)+'" alt="'+esc(it.alt||it.head||'')+'" loading="lazy" style="width:100%;max-width:250px;border-radius:10px;display:block"></div>';
+          inner+='<div class="body"><h3>'+esc(it.head||'')+(it.tag?(' <span class="tag">'+esc(it.tag)+'</span>'):'')+'</h3>';
+          if(it.desc) inner+='<p class="desc">'+esc(it.desc)+'</p>';
+          if(it.bullets&&it.bullets.length) inner+='<ul>'+it.bullets.map(function(b){return '<li>'+esc(b)+'</li>';}).join('')+'</ul>';
+          (it.meta||[]).forEach(function(m){ inner+='<div class="meta">'+esc(m)+'</div>'; });
+          inner+='</div></article>';
+        });
+        inner+='</div>';
+      }
+      if(s.refs&&s.refs.length){
+        inner+='<div class="refs">'+s.refs.map(function(r){
+          return '<a class="ref" href="'+esc(r.href)+'" target="_blank" rel="noopener nofollow"><b>'+esc(r.label||r.href)+'</b>'
+               +(r.desc?('<span>'+esc(r.desc)+'</span>'):'')+'</a>';
+        }).join('')+'</div>';
+      }
+      if(s.note) inner+='<div class="note">'+esc(s.note)+'</div>';
+      if(inner) out+=sec(inner);
+    });
+    main.innerHTML=out;
+    if(c.products&&c.products.site) renderProducts(c.products.site,c.products.cat||CAT);
+    (c.sections||[]).forEach(function(s){ if(s.products&&s.products.site) renderProducts(s.products.site,s.products.cat||CAT); });
+  }
 
-  <article class="item">
-    <div class="art"><img src="img/lc/coldplate-kenfa.png" alt="Copper microchannel cold plates for CPU and GPU (reference product photo)" loading="lazy" style="width:100%;max-width:250px;border-radius:10px;display:block"></div>
-    <div class="body">
-      <h3>Cold Plates <span class="tag">D2C</span></h3>
-      <p class="desc">Copper microchannel cold plates that sit directly on the CPU/GPU package. Custom cold plates can be tooled for a specific board and mounting pattern, so the mechanical fit and thermal interface are right the first time.</p>
-      <ul>
-        <li>Copper / nickel-plated, microchannel</li>
-        <li>CPU, GPU and memory (DIMM) plates</li>
-        <li>Custom mounting + TIM per board</li>
-        <li>Pressure-tested, low-flow-resistance designs</li>
-        <li>Samples before volume tooling</li>
-      </ul>
-      <div class="meta">Send us: <code>board model</code> · <code>socket/keep-out drawing</code> · <code>target TDP</code></div>
-      <div class="meta">Photo: <code>KenFa Tech</code></div>
-    </div>
-  </article>
+  function boot(){
+    fetch(SB+'/rest/v1/trade_settings?select=value&key=eq.site_copy',{headers:H})
+      .then(function(r){return r.json();})
+      .then(function(rows){
+        var all={}; try{ all=JSON.parse((rows&&rows[0]&&rows[0].value)||'{}'); }catch(e){}
+        var byCat=all[CAT]||{};
+        var c=byCat[LANG]||byCat.en||byCat.zh||null;
+        if(!c){ c={sections:[{head:'Liquid cooling products',products:{site:'ai',cat:CAT}}]}; }
+        render(c);
+      })
+      .catch(function(){
+        render({sections:[{head:'Liquid cooling products',products:{site:'ai',cat:CAT}}]});
+      });
+  }
+  boot();
+})();
+</script>
 
-  <article class="item">
-    <div class="art"><img src="img/lc/manifold-boyd.png" alt="Rack manifold with quick disconnects and flexible hoses (reference product photo)" loading="lazy" style="width:100%;max-width:250px;border-radius:10px;display:block"></div>
-    <div class="body">
-      <h3>Manifolds &amp; Quick Disconnects <span class="tag">Loop</span></h3>
-      <p class="desc">What makes a liquid rack serviceable: a supply/return manifold with blind-mate, drip-free couplings so a node can be pulled without draining the loop. Valve-in-coupling designs mean the drips stop at the connector, not on the floor.</p>
-      <ul>
-        <li>Rack manifold, supply + return, 1"–2" class</li>
-        <li>Blind-mate quick disconnects (QD)</li>
-        <li>Flush-face / non-spill, valved</li>
-        <li>Flexible hoses, stainless and EPDM options</li>
-        <li>Flow-balanced port spacing per rack</li>
-      </ul>
-      <div class="meta">Leak-free serviceability is the point — <code>valved QDs</code></div>
-      <div class="meta">Photo: <code>Boyd</code></div>
-    </div>
-  </article>
-
-  <article class="item">
-    <div class="art"><img src="img/lc/immersion-submer.jpg" alt="Immersion cooling tank with server sled (reference product photo)" loading="lazy" style="width:100%;max-width:250px;border-radius:10px;display:block"></div>
-    <div class="body">
-      <h3>Immersion Cooling Tanks <span class="tag">Immersion</span></h3>
-      <p class="desc">For the highest densities, the whole node goes into dielectric fluid instead of onto a cold plate. Single-phase uses pumped dielectric and a heat exchanger; two-phase boils the fluid and condenses it above the server, which removes far more heat per litre of fluid.</p>
-      <ul>
-        <li>Single-phase (pumped dielectric + HX)</li>
-        <li>Two-phase (boiling/condensing, phase-change)</li>
-        <li>Tank, lid, lifting jig, drip tray, cabling</li>
-        <li>Immersion-ready PSU and cabling options</li>
-        <li>Dielectric fluid supply and top-up</li>
-      </ul>
-      <div class="meta">Better with: <code>immersion-safe PSU</code> · <code>shorter cabling</code> · <code>fluid management</code></div>
-      <div class="meta">Photo: <code>Submer</code></div>
-    </div>
-  </article>
-
-  <article class="item">
-    <div class="art"><img src="img/lc/leak-akcp.jpg" alt="Rope leak detection sensor and sensing cable (reference product photo)" loading="lazy" style="width:100%;max-width:250px;border-radius:10px;display:block"></div>
-    <div class="body">
-      <h3>Leak Detection &amp; Telemetry <span class="tag">Safety</span></h3>
-      <p class="desc">Liquid in a rack means you need to know about a leak before the customer does. Sensing rope along the drip tray, plus flow/ΔP/temperature reporting from the CDU, turns "did it leak?" into an alarm in the DCIM instead of a phone call.</p>
-      <ul>
-        <li>Leak-sensing rope / spot sensors</li>
-        <li>CDU telemetry: flow, ΔP, ΔT, pump status</li>
-        <li>Dry-contact alarm to DCIM/BMS</li>
-        <li>Valve shut-off on alarm (optional)</li>
-        <li>Scheduled coolant sampling / treatment</li>
-      </ul>
-      <div class="meta">Complete the loop: <code>sensor</code> + <code>alarm</code> + <code>shut-off</code></div>
-      <div class="meta">Photo: <code>AKCP</code></div>
-    </div>
-  </article>
-
-  </div>
-</div></section>
-
-<section class="sec"><div class="wrap">
-  <h2>Reference material</h2>
-  <div class="sub">Manufacturers' own published pages and datasheets — useful when you are writing a spec or comparing options (external links)</div>
-  <div class="refs">
-    <a class="ref" href="https://www.supermicro.com/en/products/liquid-cooling/in-rack-cdu" target="_blank" rel="noopener nofollow"><b>Supermicro — 4U In-Rack CDU</b><span>Rack-integrated CDU, compact 4U design for high-density liquid cooling</span></a>
-    <a class="ref" href="https://www.shenlingglobal.com/" target="_blank" rel="noopener nofollow"><b>Shenling — Liquid Cooling CDU</b><span>Chinese climate-control maker, liquid cooling CDU product line (EN site)</span></a>
-    <a class="ref" href="https://jetcool.com/" target="_blank" rel="noopener nofollow"><b>JetCool — CDU / SmartPlate cold plates</b><span>CDU datasheet + microconvective cold plate documentation</span></a>
-    <a class="ref" href="https://www.jindutech.com/" target="_blank" rel="noopener nofollow"><b>Jindu — custom cold plates</b><span>Liquid cold plate manufacturing, custom tooling</span></a>
-    <a class="ref" href="https://www.immersion-energy.com/" target="_blank" rel="noopener nofollow"><b>Immersion Energy — custom CDU &amp; immersion</b><span>Immersion cooling solutions and CDU builds</span></a>
-    <a class="ref" href="https://www.envicool.com/" target="_blank" rel="noopener nofollow"><b>Envicool (英维克)</b><span>Data-center thermal management: CDUs, cold plates, full liquid-cooling chains</span></a>
-    <a class="ref" href="https://dataenergy.sugon.com/" target="_blank" rel="noopener nofollow"><b>Sugon Digital / 曙光数创</b><span>Immersion and phase-change liquid cooling for data centers</span></a>
-    <a class="ref" href="https://www.opencompute.org/" target="_blank" rel="noopener nofollow"><b>Open Compute Project</b><span>OCP liquid-cooling specs (cold plate, rack, CDU requirements)</span></a>
-  </div>
-  <div class="note"><b>Sizing a rack?</b> — Tell us the rack power (kW), the node model, whether the coolant is facility water or a chiller loop, and your target supply temperature. We come back with the CDU capacity, manifold layout and cold-plate options. <a href="#" onclick="openMsg();return false">Leave a message →</a></div>
-</div></section>
-</main>
 <footer><div class="wrap">AI China · aichina.bid — AI compute &amp; server hardware. Product names and trademarks belong to their respective owners. Diagrams are schematic. Reference photographs are the property of their respective manufacturers and are shown for identification only.</div></footer>
 
 <div class="msgwrap" id="msgModal"><div class="msgbox">
@@ -277,28 +234,6 @@ async function sendMsg(e){e.preventDefault();var f=document.getElementById('msgF
 var txt='🧊 AI China · Liquid cooling page ('+location.pathname+') — '+new Date().toLocaleString()+String.fromCharCode(10)+'Name: '+name+String.fromCharCode(10)+'Email: '+em+String.fromCharCode(10)+'Message: '+msg;
 try{var r=await fetch('https://elrsrrvvuhfbkmxnvtod.supabase.co/rest/v1/messages',{method:'POST',headers:{apikey:'sb_publishable_XuZtEeFeJK6GtQC1RE3O6A_ZoVMcaO6',Authorization:'Bearer sb_publishable_XuZtEeFeJK6GtQC1RE3O6A_ZoVMcaO6','Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({device_id:'website:aichina.bid',text:txt})});if(!r.ok)throw new Error(r.status);f.style.display='none';document.getElementById('msgDone').style.display='block';}catch(err){btn.textContent='Send';alert('Failed to send. Please try again.');}}
 </script>
-<script>
-(function(){
-  var grid=document.getElementById('lcgrid'); if(!grid) return;
-  var API='https://api.agentchina.uk';
-  var SITE=grid.getAttribute('data-site'), CAT=grid.getAttribute('data-cat');
-  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
-  function specs(p){var o=[],a=p.specs||[];for(var i=0;i<a.length&&o.length<4;i++){var s=a[i]||{};var t=s.k?(s.k+': '+s.v):(s.v||'');if(t)o.push(t);}return o;}
-  function card(p,i){
-    var img=(p.images&&p.images[0])?('<img loading="lazy" src="'+esc(p.images[0])+'" alt="'+esc(p.name_en||'')+'">'):('<span class="ic">'+esc(p.icon||'\u{1F4E6}')+'</span>');
-    var sp=specs(p).map(function(s){return '<li>'+esc(s)+'</li>';}).join('');
-    return '<article class="pcard"><div class="ph">'+img+'</div><div class="bd"><div class="en">'+esc(p.name_en||p.id)+'</div>'
-      +(p.name_zh?('<div class="zh">'+esc(p.name_zh)+'</div>'):'')
-      +(sp?('<ul>'+sp+'</ul>'):'')
-      +(p.voice_url?('<div class="vrow"><span>\u{1F50A}</span><audio controls preload="none" src="'+esc(p.voice_url)+'"></audio></div>'):'')
-      +'</div></article>';
-  }
-  fetch(API+'/search?site='+SITE+'&cat='+CAT).then(function(r){return r.json();}).then(function(list){
-    list=Array.isArray(list)?list:[];
-    if(!list.length){ document.getElementById('lcempty').style.display='block'; return; }
-    grid.innerHTML=list.map(card).join('');
-  }).catch(function(){ document.getElementById('lcempty').style.display='block'; });
-})();
-</script>
+
 <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "2afd35a2fe884b0fa649c960e7afa2e6"}'></script><!-- End Cloudflare Web Analytics -->
 </body></html>
